@@ -248,13 +248,35 @@ $(KERNEL_CONFIG): $(KERNEL_DEFCONFIG_SRC) $(KERNEL_ADDITIONAL_CONFIG_OUT)
 			$(call make-kernel-target,KCONFIG_ALLCONFIG=$(KERNEL_OUT)/.config alldefconfig); \
 		fi
 
+# TODO
+# For now this creates some issue because of ifneq ($(BOARD_KERNEL_IMAGE_NAME),zImage-dtb)
+# ifneq ($(BOARD_DTB_IMAGE_NAME),)
+# 	ifneq ($(BOARD_KERNEL_IMAGE_NAME),zImage-dtb)
+# 		$(warning **********************************************************)
+# 		$(warning * DTB image found, but ${BOARD_KERNEL_IMAGE_NAME} is not *)
+# 		$(warning * supported with BOARD_DTB_IMAGE_NAME. Please use	   *)
+# 		$(warning * TARGET_KERNEL_CONFIG="zImage-dtb" instead in your your *)
+# 		$(warning * BoardConfig.mk file					   *)
+# 		$(warning **********************************************************)
+# 		$(error "WRONG BOARD_KERNEL_IMAGE_NAME")
+# 	endif
+# endif
+
 $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_CONFIG) $(DEPMOD)
 	@echo "Building Kernel"
+ifneq ($(BOARD_DTB_IMAGE_NAME),)
+	$(call make-kernel-target,zImage)
+	$(call make-kernel-target,$(BOARD_DTB_IMAGE_NAME))
+	cat $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/zImage \
+		$(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/dts/$(BOARD_DTB_IMAGE_NAME) \
+		> $(KERNEL_BIN)
+else
 	$(call make-kernel-target,$(BOARD_KERNEL_IMAGE_NAME))
 	$(hide) if grep -q '^CONFIG_OF=y' $(KERNEL_CONFIG); then \
 			echo "Building DTBs"; \
 			$(call make-kernel-target,dtbs); \
 		fi
+endif
 	$(hide) if grep -q '=m' $(KERNEL_CONFIG); then \
 			echo "Building Kernel Modules"; \
 			$(call make-kernel-target,modules) || exit "$$?"; \
