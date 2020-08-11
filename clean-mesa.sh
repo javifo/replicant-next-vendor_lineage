@@ -36,7 +36,7 @@ if [ -z "${OUT}" ] ; then
   exit 1
 fi
 
-rm -rf "${OUT}/obj/STATIC_LIBRARIES/libmesa_*"
-rm -rf "${OUT}/gen/STATIC_LIBRARIES/libmesa_*"
-rm -rf "${OUT}/symbols/system/vendor/lib/egl/libGLES_mesa.so"
-rm -rf "${OUT}/system/vendor/lib/egl/libGLES_mesa.so"
+rm -rf "${OUT}"/obj/STATIC_LIBRARIES/libmesa_*
+rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libmesa_*
+rm -rf "${OUT}"/symbols/system/vendor/lib/egl/libGLES_mesa.so
+rm -rf "${OUT}"/system/vendor/lib/egl/libGLES_mesa.so
