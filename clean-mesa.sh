@@ -15,27 +15,46 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 set -e
 
+supported_machines=" \
+    i9300 \
+    i9305 \
+"
+
 usage()
 {
-	echo "$0 clean"
+	printf "%s [" "$0"
+	for machine in ${supported_machines} ; do
+		printf "${machine}|"
+	done
+	printf "\b]\n"
 	exit 1
 }
 
-# Guard against accidental usage without arguments
-# people are used to do ./script.sh to get the help
 if [ $# -ne 1 ] ; then
 	usage
-elif [ "$1" != "clean" ] ; then
+else
+    found=0
+    for machine in ${supported_machines} ; do
+	if [ "${machine}" = "$1" ] ; then
+	    found=1
+	fi
+    done
+
+    if [ ${found} -eq 0 ] ; then
+	printf "machine %s not supported\n" "$1"
 	usage
+    fi
 fi
 
-if [ -z "${OUT}" ] ; then
-	echo "Error: cannot find \$OUT"
-	echo "You might need to run these commands in the current shell:"
-	echo "    source build/envsetup.sh"
-	echo "    lunch <target>"
-	exit 1
-fi
+machine="$1"
+
+# Setup the environment needed for running make clean-<target> commands.
+# We use that as people might be used to vendor/replicant/build.sh and having
+# to source again build/envsetup.sh and select a machine again is not natural,
+# and it also increases the probability of mistake as the target used in
+# build.sh may be different from the one used in the manual lunch command.
+. build/envsetup.sh
+lunch "lineage_${machine}-userdebug"
 
 targets="clean-libGLES_mesa"
 
@@ -154,9 +173,16 @@ for lib in ${libmesa} ; do
     targets="${targets} clean-${lib}"
 done
 
-# All the clean targets are not sufficient to cleanup everything, after running
-# them we still have several directory left in
-# ${OUT}/gen/STATIC_LIBRARIES/libmesa_*
-rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libmesa_*
-
 make ${targets}
+
+# ${OUT} should be made available since lunch <target> however having some
+# sanity checks with a command that dangerous is always good.
+if [ -z "${OUT}" ] ; then
+  echo "Error: cannot find \$OUT"
+  exit 1
+else
+  # All the clean targets are not sufficient to cleanup everything, after running
+  # them we still have several directory left in
+  # ${OUT}/gen/STATIC_LIBRARIES/libmesa_*
+  rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libmesa_*
+fi
