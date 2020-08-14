@@ -154,4 +154,9 @@ for lib in ${libmesa} ; do
     targets="${targets} clean-${lib}"
 done
 
+# All the clean targets are not sufficient to cleanup everything, after running
+# them we still have several directory left in
+# ${OUT}/gen/STATIC_LIBRARIES/libmesa_*
+rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libmesa_*
+
 make ${targets}
