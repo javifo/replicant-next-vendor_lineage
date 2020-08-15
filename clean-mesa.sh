@@ -212,4 +212,5 @@ else
   # them we still have several directory left in
   # ${OUT}/gen/STATIC_LIBRARIES/libmesa_*
   rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libmesa_*
+  rm -rf "${OUT}"/gen/STATIC_LIBRARIES/libfreedreno_*
 fi
