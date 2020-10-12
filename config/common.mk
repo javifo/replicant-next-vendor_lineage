@@ -183,6 +183,9 @@ PRODUCT_PACKAGES += \
 endif
 endif
 
+# Debugging tools
+PRODUCT_PACKAGES += evtest
+
 # Dex preopt
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     SystemUI \
