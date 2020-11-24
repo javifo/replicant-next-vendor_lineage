@@ -41,7 +41,7 @@ build()
     echo "starting to building for ${machine}: ${log}"
     source build/envsetup.sh
     lunch "lineage_${machine}-userdebug"
-    time make -j$parallel_tasks bacon 2>&1 | tee "${log}"
+    time make -j$parallel_tasks 2>&1 | tee "${log}"
     # vendor/replicant/sign-build "${machine}" | tee -a "${log}"
     echo "${machine} DONE: ${log}"
 }
