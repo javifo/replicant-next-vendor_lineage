@@ -77,6 +77,16 @@ else
 KERNEL_TOOLCHAIN_PATH := $(KERNEL_TOOLCHAIN)/$(KERNEL_TOOLCHAIN_PREFIX)
 endif
 
+# This uses the host xz through Android's path_interposer. Android's
+# path_interposer enable to run only selected host binaries. To do that the
+# previous PATH is saved in a file and then during the build it's not available
+# anymore. The path_interposer is then able to use that saved PATH to run a
+# given binary if the TEMPORARY_DISABLE_PATH_RESTRICTIONS environment variable
+# is set to true or if the binary to run is whitelisted by in a file like
+# build/soong/ui/build/paths/config.go. See the path_interposer source in
+# build/soong/cmd/path_interposer for more details).
+KERNEL_XZ := $(BUILD_TOP)/out/.path/xz
+
 # We need to add GCC toolchain to the path no matter what
 # for tools like `as`
 KERNEL_TOOLCHAIN_PATH_gcc := $(KERNEL_TOOLCHAIN_$(KERNEL_ARCH))/$(KERNEL_TOOLCHAIN_PREFIX_$(KERNEL_ARCH))
