@@ -85,7 +85,7 @@ endif
 # is set to true or if the binary to run is whitelisted by in a file like
 # build/soong/ui/build/paths/config.go. See the path_interposer source in
 # build/soong/cmd/path_interposer for more details).
-KERNEL_XZ := $(BUILD_TOP)/out/.path/xz
+KERNEL_XZ := $(OUT_DIR)/.path/xz
 
 # We need to add GCC toolchain to the path no matter what
 # for tools like `as`
